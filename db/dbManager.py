@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import pathlib
 import logging
+from typing import Optional
 
 class DBManager:
     """
@@ -148,6 +149,17 @@ class DBManager:
         """
         if self.conn:
             self.conn.rollback()
+    
+    def get_last_insert_id(self) -> Optional[int]:
+        """
+        获取最后插入记录的ID
+        
+        Returns:
+            int: 最后插入的记录ID，如果没有则返回None
+        """
+        if self.cursor:
+            return self.cursor.lastrowid
+        return None
     
     def __del__(self):
         """
