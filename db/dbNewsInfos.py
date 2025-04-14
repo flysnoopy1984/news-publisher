@@ -54,7 +54,6 @@ class dbNewsInfos:
             success = self.db.executemany(sql, insert_data)
             if success:
                 self.db.commit()
-                logging.info(f"成功批量插入 {len(news_list)} 条新闻数据")
                 return True
             else:
                 self.db.rollback()
@@ -137,7 +136,6 @@ class dbNewsInfos:
             if success:
                 inserted_id = self.db.get_last_insert_id()
                 self.db.commit()
-                logging.info(f"成功插入新闻数据，ID: {inserted_id}")
                 return inserted_id
             else:
                 logging.error("插入新闻数据失败")

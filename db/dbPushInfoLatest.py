@@ -57,7 +57,6 @@ class dbPushInfoLatest:
             success = self.db.executemany(sql, insert_data)
             if success:
                 self.db.commit()
-                logging.info(f"成功批量插入 {len(push_list)} 条推送信息")
                 return True
             else:
                 self.db.rollback()
@@ -125,7 +124,6 @@ class dbPushInfoLatest:
             if success:
                 rows_affected = self.db.get_rows_affected()
                 self.db.commit()
-                logging.info(f"成功删除 {rows_affected} 条记录，新闻类型: {news_type}，渠道ID: {source_id}")
                 return True
             else:
                 self.db.rollback()
@@ -178,7 +176,6 @@ class dbPushInfoLatest:
             if success:
                 inserted_id = self.db.get_last_insert_id()
                 self.db.commit()
-                logging.info(f"成功插入推送信息，ID: {inserted_id}")
                 return inserted_id
             else:
                 logging.error("插入推送信息失败")

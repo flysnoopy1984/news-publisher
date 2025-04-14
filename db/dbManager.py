@@ -104,7 +104,10 @@ class DBManager:
                 self.cursor.execute(sql)
             return True
         except Exception as e:
-            logging.error(f"执行SQL出错: {e}")
+            error_msg = f"执行SQL出错: {e}\n" \
+                       f"SQL: {repr(sql)}\n" \
+                       f"参数: {repr(params) if params else '无'}"
+            logging.error(error_msg)
             return False
     
     def executemany(self, sql, params_list):
@@ -117,7 +120,10 @@ class DBManager:
             self.cursor.executemany(sql, params_list)
             return True
         except Exception as e:
-            logging.error(f"批量执行SQL出错: {e}")
+            error_msg = f"批量执行SQL出错: {e}\n" \
+                       f"SQL: {repr(sql)}\n" \
+                       f"参数列表: {repr(params_list)}"
+            logging.error(error_msg)
             return False
     
     def fetchall(self):
@@ -160,6 +166,17 @@ class DBManager:
         if self.cursor:
             return self.cursor.lastrowid
         return None
+
+    def get_rows_affected(self) -> int:
+        """
+        获取最近一次操作影响的行数
+        
+        Returns:
+            int: 受影响的行数
+        """
+        if self.cursor:
+            return self.cursor.rowcount
+        return 0
     
     def __del__(self):
         """
