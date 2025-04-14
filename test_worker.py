@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from worker import scheduled
+from main import scheduled
 
 async def test_scheduled():
     """
