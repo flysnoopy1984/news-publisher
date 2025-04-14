@@ -69,7 +69,7 @@ class dbPushInfoLatest:
             logging.error(f"批量插入推送信息时发生错误: {e}")
             return False
 
-    def get_push_info_by_type(self, news_type: str) -> Optional[List[tuple]]:
+    def get_push_info_by_type(self, news_type: str = "news") -> Optional[List[tuple]]:
         """
         获取指定类型的所有推送信息
         
@@ -99,6 +99,43 @@ class dbPushInfoLatest:
         except Exception as e:
             logging.error(f"查询推送信息时发生错误: {e}")
             return None
+
+    def delete_by_type_and_source(self, source_id: str, news_type: str = "news") -> bool:
+        """
+        删除指定新闻类型和来源的所有记录
+
+        Args:
+            source_id: 渠道ID
+            news_type: 推送类型（stock/news），默认为"news"
+
+        Returns:
+            bool: 删除是否成功
+        """
+        if not self.db:
+            logging.error("数据库连接不存在")
+            return False
+
+        sql = """
+            DELETE FROM pushinfo_latest 
+            WHERE newsType = %s AND sourceId = %s
+        """
+
+        try:
+            success = self.db.execute(sql, (news_type, source_id))
+            if success:
+                rows_affected = self.db.get_rows_affected()
+                self.db.commit()
+                logging.info(f"成功删除 {rows_affected} 条记录，新闻类型: {news_type}，渠道ID: {source_id}")
+                return True
+            else:
+                self.db.rollback()
+                logging.error(f"删除记录失败，新闻类型: {news_type}，渠道ID: {source_id}")
+                return False
+
+        except Exception as e:
+            self.db.rollback()
+            logging.error(f"删除记录时发生错误: {e}", exc_info=True)
+            return False
 
     def insert_single_push_info(self, push_info: Dict) -> Optional[int]:
         """
