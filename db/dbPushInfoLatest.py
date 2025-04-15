@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 from typing import List, Dict, Optional
 from .dbManager import db_manager
 import logging
@@ -30,7 +31,7 @@ class dbPushInfoLatest:
             logging.warning("推送信息列表为空，无需插入")
             return True
 
-        current_time = datetime.now()
+        current_time = datetime.now(pytz.timezone('Asia/Shanghai')).replace(tzinfo=None)
         
         # 准备批量插入的数据
         insert_data = [
@@ -154,7 +155,7 @@ class dbPushInfoLatest:
             logging.error("数据库连接不存在")
             return None
             
-        current_time = datetime.now()
+        current_time = datetime.now(pytz.timezone('Asia/Shanghai')).replace(tzinfo=None)
         sql = """
             INSERT INTO pushinfo_latest 
             (sourceId, sourceName, newsInfoId, newsType, status, createDateTime)
