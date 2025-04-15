@@ -97,7 +97,13 @@ class DBManager:
         """
         try:
             if not self.conn or not self.cursor:
-                self.connect()
+                if not self.connect():
+                    error_msg = "数据库连接失败，无法执行SQL\n" \
+                               f"SQL: {repr(sql)}\n" \
+                               f"参数: {repr(params) if params else '无'}"
+                    logging.error(error_msg)
+                    return False
+            
             if params:
                 self.cursor.execute(sql, params)
             else:
@@ -116,7 +122,13 @@ class DBManager:
         """
         try:
             if not self.conn or not self.cursor:
-                self.connect()
+                if not self.connect():
+                    error_msg = "数据库连接失败，无法执行批量SQL\n" \
+                               f"SQL: {repr(sql)}\n" \
+                               f"参数列表: {repr(params_list)}"
+                    logging.error(error_msg)
+                    return False
+                    
             self.cursor.executemany(sql, params_list)
             return True
         except Exception as e:
